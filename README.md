@@ -59,7 +59,6 @@ from xml_mapper import base
 class ItemXmlParser(base.BaseXmlParser):
     __namespaces__ = {'aw': 'http://www.adventure-works.com'}
 
-
     product_name = base.ValueField(".//aw:ProductName")
     part_number = base.AttributeField("./@aw:PartNumber")
     quantity = base.ValueField(".//aw:Quantity")
