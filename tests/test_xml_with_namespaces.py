@@ -48,7 +48,7 @@ class ItemXmlParser(base.BaseXmlParser):
     __namespaces__ = {'aw': 'http://www.adventure-works.com'}
 
     product_name = base.ValueField(".//aw:ProductName")
-    part_number = base.AttributeField("./@aw:PartNumber")
+    part_number = base.ValueField("./@aw:PartNumber")
     quantity = base.ValueField(".//aw:Quantity")
     us_price = base.ValueField(".//aw:USPrice")
 
@@ -62,7 +62,7 @@ class PurchaseOrderXmlParser(base.BaseXmlParser):
     address_shipping = base.ObjectField(".//aw:Address[@aw:Type='Shipping']", AddressXmlParser)
     address_billing = base.ObjectField(".//aw:Address[@aw:Type='Billing']", AddressXmlParser)
     delivery_notes = base.ValueField(".//aw:DeliveryNotes")
-    items = base.ListField(".//aw:Item", ItemXmlParser)
+    items = base.ListObjectField(".//aw:Item", ItemXmlParser)
 
 
 class TestXmlParserCreation(unittest.TestCase):

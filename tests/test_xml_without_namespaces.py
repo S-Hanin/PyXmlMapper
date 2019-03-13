@@ -1,6 +1,7 @@
 # -*- coding: utf8 -*-
 
 import unittest
+from datetime import datetime
 
 from .. import base
 
@@ -42,22 +43,30 @@ xml = """
 
 
 class ItemXmlParser(base.BaseXmlParser):
-    product_name = base.ValueField(".//ProductName")
-    part_number = base.AttributeField("./@PartNumber")
-    quantity = base.ValueField(".//Quantity")
-    us_price = base.ValueField(".//USPrice")
+    product_name = base.ValueField("ProductName")
+    part_number = base.ValueField("@PartNumber")
+    quantity = base.ValueField("Quantity", pytype=int)
+    us_price = base.ValueField("USPrice", pytype=float)
 
 
 class AddressXmlParser(base.BaseXmlParser):
-    name = base.ValueField(".//Name")
-    city = base.ValueField(".//City")
+    name = base.ValueField("Name")
+    city = base.ValueField("City")
 
 
 class PurchaseOrderXmlParser(base.BaseXmlParser):
-    address_shipping = base.ObjectField(".//Address[@Type='Shipping']", AddressXmlParser)
-    address_billing = base.ObjectField(".//Address[@Type='Billing']", AddressXmlParser)
-    delivery_notes = base.ValueField(".//DeliveryNotes")
-    items = base.ListField(".//Item", ItemXmlParser)
+    order_date = base.DateTimeField('@OrderDate', date_format="%Y-%m-%d")
+    address_shipping = base.ObjectField("Address[@Type='Shipping']", AddressXmlParser)
+    address_billing = base.ObjectField("Address[@Type='Billing']", AddressXmlParser)
+    delivery_notes = base.ValueField("DeliveryNotes")
+    items = base.ListObjectField("Items/Item", ItemXmlParser)
+
+
+class PurchaseItemsXmlParser(base.BaseXmlParser):
+    prices = base.ListValueField(".//USPrice")
+    typed_prices = base.ListValueField(".//USPrice", pytype=float)
+    cities = base.ListValueField(".//City")
+    order_types = base.ListValueField(".//@Type")
 
 
 class TestXmlParserCreation(unittest.TestCase):
@@ -76,17 +85,32 @@ class TestXmlParserCreation(unittest.TestCase):
         self.assertTrue(self.obj.document)
 
     def test_value_fields_fill(self):
-        self.assertTrue(self.obj.address_shipping.name == 'Ellen Adams')
-        self.assertTrue(self.obj.address_billing.city == 'Old Town')
-        self.assertTrue(self.obj.delivery_notes == 'Please leave packages in shed by driveway.')
+        self.assertEqual(self.obj.address_shipping.name, 'Ellen Adams')
+        self.assertEqual(self.obj.address_billing.city, 'Old Town')
+        self.assertEqual(self.obj.delivery_notes, 'Please leave packages in shed by driveway.')
+        self.assertEqual(self.obj.order_date, datetime(1999, 10, 20))
 
-    def test_list_fields_fill(self):
-        self.assertTrue(self.obj.items[0].product_name == 'Lawnmower')
-        self.assertTrue(self.obj.items.first().product_name == 'Lawnmower')
-        self.assertTrue(self.obj.items.first().part_number == '872-AA')
-        self.assertTrue(self.obj.items.last().product_name == 'Baby Monitor')
-        self.assertTrue(self.obj.items.last().quantity == '2')
-        self.assertTrue(self.obj.items.last().us_price == '39.98')
+    def test_list_object_fields_fill(self):
+        self.assertEqual(self.obj.items[0].product_name, 'Lawnmower')
+        self.assertEqual(self.obj.items.first().product_name, 'Lawnmower')
+        self.assertEqual(self.obj.items.last().product_name, 'Baby Monitor')
+        self.assertEqual(self.obj.items.last().quantity, 2)
+        self.assertEqual(self.obj.items.last().us_price, 39.98)
+        self.assertEqual(len(self.obj.items), 2)
+
+
+class TextXmlParserListFields(unittest.TestCase):
+    def setUp(self):
+        self.obj = PurchaseItemsXmlParser(xml)
+
+    def test_list_text_fields_fill(self):
+        self.assertEqual(self.obj.prices.all(), ['148.95', '39.98'])
+        self.assertEqual(self.obj.cities.first(), 'Mill Valley')
+        self.assertEqual(self.obj.cities.last(), 'Old Town')
+        self.assertEqual(self.obj.order_types.all(), ['Shipping', 'Billing'])
+
+    def test_typed_list_text_fields_fill(self):
+        self.assertEqual(self.obj.typed_prices.all(), [148.95, 39.98])
 
 
 class TestXmlParserNotFoundCases(unittest.TestCase):

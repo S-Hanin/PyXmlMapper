@@ -59,22 +59,23 @@ from xml_mapper import base
 class ItemXmlParser(base.BaseXmlParser):
     __namespaces__ = {'aw': 'http://www.adventure-works.com'}
 
-    product_name = base.ValueField(".//aw:ProductName")
-    part_number = base.AttributeField("./@aw:PartNumber")
-    quantity = base.ValueField(".//aw:Quantity")
-    us_price = base.ValueField(".//aw:USPrice")
+    product_name = base.ValueField("aw:ProductName")
+    part_number = base.ValueField("@aw:PartNumber")
+    quantity = base.ValueField("aw:Quantity", pytype=int)
+    us_price = base.ValueField("aw:USPrice", pytype=float)
 
 
 class AddressXmlParser(base.BaseXmlParser):
-    name = base.ValueField(".//aw:Name")
-    city = base.ValueField(".//aw:City")
+    name = base.ValueField("aw:Name")
+    city = base.ValueField("aw:City")
 
 
 class PurchaseOrderXmlParser(base.BaseXmlParser):
-    address_shipping = base.ObjectField(".//aw:Address[@aw:Type='Shipping']", AddressXmlParser)
-    address_billing = base.ObjectField(".//aw:Address[@aw:Type='Billing']", AddressXmlParser)
-    delivery_notes = base.ValueField(".//aw:DeliveryNotes")
-    items = base.ListField(".//aw:Item", ItemXmlParser)
+    order_date = base.DateTimeField('@aw:OrderDate', date_format="%Y-%m-%d")
+    address_shipping = base.ObjectField("aw:Address[@aw:Type='Shipping']", AddressXmlParser)
+    address_billing = base.ObjectField("aw:Address[@aw:Type='Billing']", AddressXmlParser)
+    delivery_notes = base.ValueField("aw:DeliveryNotes")
+    items = base.ListObjectField(".//aw:Item", ItemXmlParser)
     
 
 purchase_order = PurchaseOrderXmlParser(xml) # xml - string or xml tree

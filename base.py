@@ -65,6 +65,9 @@ class Selector:
         if len(self.items) < index: return Default(self.default)
         return self.items[index]
 
+    def all(self):
+        return self.items
+
     def __len__(self):
         return len(self.items)
 
@@ -80,30 +83,38 @@ class FieldMeta(type):
     def __call__(cls, *args, **kwargs):
         """set all __init__ arguments to object"""
         obj = type.__call__(cls, *args)
-        [setattr(obj, name, kwargs[name]) for name in kwargs]
+        [setattr(obj, "_" + name, kwargs[name]) for name in kwargs]
         return obj
 
 
-class XmlField(metaclass=FieldMeta):
-    def __init__(self, query, parser=None, default=""):
+class ToPythonTypeMixin:
+    def to_string(self, value):
+        return str(value)
+
+    def to_int(self, value):
+        return int(value)
+
+    def to_float(self, value):
+        return float(value)
+
+
+class XmlField(ToPythonTypeMixin, metaclass=FieldMeta):
+    def __init__(self, query, parser=None, pytype=str, default=""):
 
         self._query = query
         self._default = default
         self._parser = parser
+        self._pytype = pytype
 
     def exec_query(self, doc):
         self._set_doc_namespaces(doc)
         find = etree.XPath(self._query, namespaces=self._namespaces)
         return find(doc)
 
-    def attr(self, doc):
-        result = Selector(self.exec_query(doc), self._default)
-        return result.first()
-
-    def text(self, doc):
+    def value(self, doc):
         result = Selector(self.exec_query(doc), self._default)
         try:
-            return result.first().text
+            return self._pytype(getattr(result.first(), 'text', result.first()))
         except Exception as err:
             logging.debug("{}\n{}".format(err, self._to_string(doc)))
 
@@ -118,7 +129,10 @@ class XmlField(metaclass=FieldMeta):
         result = []
         query_result = self.exec_query(doc)
         for item in query_result:
-            result.append(self._parser(item))
+            if self._parser:
+                result.append(self._parser(item))
+            else:
+                result.append(self._pytype(getattr(item, 'text', item)))
         return Selector(result, self._default)
 
     def _set_doc_namespaces(self, doc):
@@ -136,28 +150,28 @@ class XmlField(metaclass=FieldMeta):
         self._namespaces = getattr(owner, '__namespaces__')
 
 
-class AttributeField(XmlField):
-
-    def __get__(self, instance, owner):
-        if not instance: return self
-        return self.attr(instance.document)
-
-
 class ValueField(XmlField):
 
     def __get__(self, instance, owner):
         if not instance: return self
-        return self.text(instance.document) or ""
+        return self.value(instance.document)
+
+
+class ListValueField(XmlField):
+
+    def __get__(self, instance, owner):
+        if not instance: return self
+        return self.list(instance.document)
 
 
 class DateTimeField(XmlField):
 
     def __get__(self, instance, owner):
         if not instance: return self
-        return self.convert_date(self.text(instance.document))
+        return self.convert_date(self.value(instance.document))
 
     def convert_date(self, date):
-        date_format = self.date_format if hasattr(self, 'date_format') else "%Y-%m-%dT%H:%M:%S%z"
+        date_format = self._date_format if hasattr(self, '_date_format') else "%Y-%m-%dT%H:%M:%S%z"
         result = datetime.strptime(date, date_format)
         return result
 
@@ -169,7 +183,7 @@ class ObjectField(XmlField):
         return self.object(instance.document)
 
 
-class ListField(XmlField):
+class ListObjectField(XmlField):
 
     def __get__(self, instance, owner):
         if not instance: return self
@@ -202,5 +216,4 @@ class BaseXmlParser(metaclass=ParserMeta):
     @property
     def document(self):
         return self.__xml_tree__
-
 
