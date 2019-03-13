@@ -69,6 +69,15 @@ class PurchaseItemsXmlParser(base.BaseXmlParser):
     order_types = base.ListValueField(".//@Type")
 
 
+class PurchaseOrderWithNotFoundFields(base.BaseXmlParser):
+    order_date = base.DateTimeField('@orderdate', date_format="%Y-%m-%d")
+    order_date_default = base.DateTimeField('@orderdate', date_format="%Y-%m-%d", default="1970-01-01")
+    address_shipping = base.ObjectField("address[@Type='Shipping']", AddressXmlParser)
+    address_billing = base.ObjectField("address[@Type='Billing']", AddressXmlParser)
+    delivery_notes = base.ValueField("deliveryNotes")
+    items = base.ListObjectField("items/Item", ItemXmlParser)
+
+
 class TestXmlParserCreation(unittest.TestCase):
 
     def setUp(self):
@@ -82,7 +91,7 @@ class TestXmlParserCreation(unittest.TestCase):
         self.assertTrue(hasattr(self.obj, '__xml_tree__'))
 
     def test_set_document(self):
-        self.assertTrue(self.obj.document)
+        self.assertTrue(self.obj.document is not None)
 
     def test_value_fields_fill(self):
         self.assertEqual(self.obj.address_shipping.name, 'Ellen Adams')
@@ -116,5 +125,17 @@ class TextXmlParserListFields(unittest.TestCase):
 class TestXmlParserNotFoundCases(unittest.TestCase):
 
     def setUp(self):
-        self.obj = PurchaseOrderXmlParser()
-        self.obj.set_document(xml)
+        self.obj = PurchaseOrderWithNotFoundFields(xml)
+
+    @unittest.expectedFailure
+    def test_datetime_fields_fail(self):
+        order_date = self.obj.order_date
+
+    def test_datetime_field_raise_exception(self):
+        self.assertRaises(ValueError, lambda: self.obj.order_date)
+
+    def test_datetime_field_default(self):
+        self.assertEqual(self.obj.order_date_default, datetime(1970, 1, 1))
+
+    def test_value_field_raise_exception(self):
+        self.assertEqual(self.obj.delivery_notes, '')

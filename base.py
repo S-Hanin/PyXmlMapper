@@ -4,6 +4,10 @@ from datetime import datetime
 from lxml import etree
 
 
+class NotFoundExcetion(Exception):
+    pass
+
+
 # region lxml custom functions
 
 
@@ -42,7 +46,7 @@ class Default:
         self.default = default
 
     def __getattr__(self, item):
-        return None
+        return self.default
 
     def __bool__(self):
         return False
@@ -87,52 +91,56 @@ class FieldMeta(type):
         return obj
 
 
-class ToPythonTypeMixin:
-    def to_string(self, value):
-        return str(value)
-
-    def to_int(self, value):
-        return int(value)
-
-    def to_float(self, value):
-        return float(value)
+class TypeCastMixin:
+    def convert(self, _type, value):
+        try:
+            return _type(value)
+        except Exception as err:
+            logging.critical(err)
+            raise TypeError(err)
 
 
-class XmlField(ToPythonTypeMixin, metaclass=FieldMeta):
-    def __init__(self, query, parser=None, pytype=str, default=""):
+class XmlField(TypeCastMixin, metaclass=FieldMeta):
+    def __init__(self, query, pytype=str, default="", strict=False):
 
         self._query = query
         self._default = default
-        self._parser = parser
         self._pytype = pytype
+        self._strict = strict
 
     def exec_query(self, doc):
         self._set_doc_namespaces(doc)
         find = etree.XPath(self._query, namespaces=self._namespaces)
-        return find(doc)
+        result = find(doc)
+        if len(result) == 0 and self._strict:
+            raise NotFoundExcetion
+        return result
 
     def value(self, doc):
         result = Selector(self.exec_query(doc), self._default)
         try:
-            return self._pytype(getattr(result.first(), 'text', result.first()))
+            return self.convert(self._pytype, getattr(result.first(), 'text', result.first()))
         except Exception as err:
             logging.debug("{}\n{}".format(err, self._to_string(doc)))
+            raise
+
+    def values_list(self, doc):
+        query_result = self.exec_query(doc)
+        result = [self.convert(self._pytype, getattr(item, 'text', item)) for item in query_result]
+        return Selector(result, self._default)
 
     def object(self, doc):
         result = Selector(self.exec_query(doc), self._default)
         if len(result) > 0:
-            return self._parser(result.first())
+            return self.convert(self._pytype, result.first())
         else:
             return None
 
-    def list(self, doc):
+    def objects_list(self, doc):
         result = []
         query_result = self.exec_query(doc)
         for item in query_result:
-            if self._parser:
-                result.append(self._parser(item))
-            else:
-                result.append(self._pytype(getattr(item, 'text', item)))
+            result.append(self.convert(self._pytype, item))
         return Selector(result, self._default)
 
     def _set_doc_namespaces(self, doc):
@@ -161,7 +169,7 @@ class ListValueField(XmlField):
 
     def __get__(self, instance, owner):
         if not instance: return self
-        return self.list(instance.document)
+        return self.values_list(instance.document)
 
 
 class DateTimeField(XmlField):
@@ -187,7 +195,7 @@ class ListObjectField(XmlField):
 
     def __get__(self, instance, owner):
         if not instance: return self
-        return self.list(instance.document)
+        return self.objects_list(instance.document)
 
 
 class ParserMeta(type):
