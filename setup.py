@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='xml_mapper',
+    name='PyXmlMapper',
     version='0.0.1',
     packages=[''],
     url='',
