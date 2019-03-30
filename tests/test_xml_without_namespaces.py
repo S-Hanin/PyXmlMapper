@@ -3,7 +3,7 @@
 import unittest
 from datetime import datetime
 
-from .. import base
+from PyXmlMapper import base
 
 xml = """
 <PurchaseOrder PurchaseOrderNumber="99503" OrderDate="1999-10-20">  

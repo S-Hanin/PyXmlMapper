@@ -53,7 +53,7 @@ xml example
 define classes for mapping
 
 ```python
-from xml_mapper import base
+from PyXmlMapper import base
 
 
 class ItemXmlParser(base.BaseXmlParser):

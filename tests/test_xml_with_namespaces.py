@@ -2,7 +2,7 @@
 
 import unittest
 
-from .. import base
+from PyXmlMapper import base
 
 xml = """
 <aw:PurchaseOrder  
