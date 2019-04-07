@@ -58,11 +58,17 @@ class AddressXmlParser(base.BaseXmlParser):
     city = base.ValueField(".//aw:City")
 
 
+class Customer(base.BaseXmlParser):
+    name = base.ValueField(".//aw:Customer")
+
+
 class PurchaseOrderXmlParser(base.BaseXmlParser):
     address_shipping = base.ObjectField(".//aw:Address[@aw:Type='Shipping']", AddressXmlParser)
     address_billing = base.ObjectField(".//aw:Address[@aw:Type='Billing']", AddressXmlParser)
     delivery_notes = base.ValueField(".//aw:DeliveryNotes")
     items = base.ListObjectField(".//aw:Item", ItemXmlParser)
+    customer1 = base.ObjectField(".//aw:customer", Customer)
+    customer2 = base.ObjectField(".//aw:customer", Customer, strict=True)
 
 
 class TestXmlParserCreation(unittest.TestCase):
@@ -92,6 +98,13 @@ class TestXmlParserCreation(unittest.TestCase):
         self.assertTrue(self.obj.items.last().product_name == 'Baby Monitor')
         self.assertTrue(self.obj.items.last().quantity == '2')
         self.assertTrue(self.obj.items.last().us_price == '39.98')
+
+    def test_missed_xml_subitem_return_empty_object(self):
+        self.assertIsInstance(self.obj.customer1, Customer)
+        self.assertEqual("", self.obj.customer1.name)
+
+    def test_missed_xml_subitem_raises_error_with_strict(self):
+        self.assertRaises(base.NotFoundExcetion, lambda: self.obj.customer2)
 
 
 class TestXmlParserNotFoundCases(unittest.TestCase):

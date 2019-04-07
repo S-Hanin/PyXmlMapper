@@ -111,7 +111,7 @@ class XmlField(TypeCastMixin, metaclass=FieldMeta):
     def exec_query(self, doc):
         self._set_doc_namespaces(doc)
         find = etree.XPath(self._query, namespaces=self._namespaces)
-        result = find(doc)
+        result = [] if not doc else find(doc)
         if len(result) == 0 and self._strict:
             raise NotFoundExcetion
         return result
@@ -131,10 +131,7 @@ class XmlField(TypeCastMixin, metaclass=FieldMeta):
 
     def object(self, doc):
         result = Selector(self.exec_query(doc), self._default)
-        if len(result) > 0:
-            return self.convert(self._pytype, result.first())
-        else:
-            return None
+        return self.convert(self._pytype, result.first())
 
     def objects_list(self, doc):
         result = []
@@ -144,6 +141,9 @@ class XmlField(TypeCastMixin, metaclass=FieldMeta):
         return Selector(result, self._default)
 
     def _set_doc_namespaces(self, doc):
+        if not doc:
+            self._namespaces = {}
+            return
         if self._namespaces.get('auto'):
             self._namespaces = doc.nsmap
             if None in self._namespaces:
