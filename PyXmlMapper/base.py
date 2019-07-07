@@ -94,6 +94,7 @@ class FieldMeta(type):
 class TypeCastMixin:
     def convert(self, _type, value):
         try:
+            if isinstance(value, Default): return value.default
             return _type(value)
         except Exception as err:
             logging.critical(err)

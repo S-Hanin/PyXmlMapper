@@ -78,6 +78,10 @@ class PurchaseOrderWithNotFoundFields(base.BaseXmlParser):
     items = base.ListObjectField("items/Item", ItemXmlParser)
 
 
+class AddressContainerWithWrongQuery(base.BaseXmlParser):
+    address = base.ObjectField("address", AddressXmlParser, default=None)
+
+
 class TestXmlParserCreation(unittest.TestCase):
 
     def setUp(self):
@@ -127,10 +131,6 @@ class TestXmlParserNotFoundCases(unittest.TestCase):
     def setUp(self):
         self.obj = PurchaseOrderWithNotFoundFields(xml)
 
-    @unittest.expectedFailure
-    def test_datetime_fields_fail(self):
-        order_date = self.obj.order_date
-
     def test_datetime_field_raise_exception(self):
         self.assertRaises(ValueError, lambda: self.obj.order_date)
 
@@ -139,3 +139,7 @@ class TestXmlParserNotFoundCases(unittest.TestCase):
 
     def test_value_field_raise_exception(self):
         self.assertEqual(self.obj.delivery_notes, '')
+
+    def test_object_field_returns_default_value(self):
+        self.wrong_address = AddressContainerWithWrongQuery(xml)
+        self.assertTrue(self.wrong_address.address is None)

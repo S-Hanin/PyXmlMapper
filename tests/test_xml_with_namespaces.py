@@ -67,7 +67,7 @@ class PurchaseOrderXmlParser(base.BaseXmlParser):
     address_billing = base.ObjectField(".//aw:Address[@aw:Type='Billing']", AddressXmlParser)
     delivery_notes = base.ValueField(".//aw:DeliveryNotes")
     items = base.ListObjectField(".//aw:Item", ItemXmlParser)
-    customer1 = base.ObjectField(".//aw:customer", Customer)
+    customer1 = base.ObjectField(".//aw:customer", Customer, default=Customer())
     customer2 = base.ObjectField(".//aw:customer", Customer, strict=True)
 
 
@@ -99,7 +99,7 @@ class TestXmlParserCreation(unittest.TestCase):
         self.assertTrue(self.obj.items.last().quantity == '2')
         self.assertTrue(self.obj.items.last().us_price == '39.98')
 
-    def test_missed_xml_subitem_return_empty_object(self):
+    def test_missed_xml_subitem_return_default_value(self):
         self.assertIsInstance(self.obj.customer1, Customer)
         self.assertEqual("", self.obj.customer1.name)
 
