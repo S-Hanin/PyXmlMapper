@@ -3,6 +3,8 @@ import logging
 from datetime import datetime
 from lxml import etree
 
+logger = logging.getLogger('PyXmlMapper')
+
 
 class NotFoundExcetion(Exception):
     pass
@@ -97,7 +99,7 @@ class TypeCastMixin:
             if isinstance(value, Default): return value.default
             return _type(value)
         except Exception as err:
-            logging.critical(err)
+            logger.critical(err)
             raise TypeError(err)
 
 
@@ -122,7 +124,7 @@ class XmlField(TypeCastMixin, metaclass=FieldMeta):
         try:
             return self.convert(self._pytype, getattr(result.first(), 'text', result.first()))
         except Exception as err:
-            logging.debug("{}\n{}".format(err, self._to_string(doc)))
+            logger.debug("{}\n{}".format(err, self._to_string(doc)))
             raise
 
     def values_list(self, doc):
@@ -177,11 +179,20 @@ class DateTimeField(XmlField):
 
     def __get__(self, instance, owner):
         if not instance: return self
-        return self.convert_date(self.value(instance.document))
-
-    def convert_date(self, date):
+        self._owner_name = instance.__class__.__name__
         date_format = self._date_format if hasattr(self, '_date_format') else "%Y-%m-%dT%H:%M:%S%z"
-        result = datetime.strptime(date, date_format)
+        return self.convert_date(self.value(instance.document), date_format, self._default)
+
+    def convert_date(self, date, date_format, default):
+        try:
+            result = datetime.strptime(date, date_format)
+        except ValueError as err:
+            logger.warning("{{ '{}':: Attr: '{}', Query: '{}' }} Exception: {}"
+                            .format(self._owner_name, self._attr_name, self._query, err))
+            if default:
+                result = datetime.strptime(self._default, date_format)
+            else:
+                raise err
         return result
 
 
@@ -221,6 +232,10 @@ class BaseXmlParser(metaclass=ParserMeta):
             self.__xml_tree__ = etree.fromstring(xml_string)
         else:
             self.__xml_tree__ = xml_string
+
+    @property
+    def raw_xml(self):
+        return etree.tostring(self.document, encoding="utf8", pretty_print=True)
 
     @property
     def document(self):

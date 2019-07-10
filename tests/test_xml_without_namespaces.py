@@ -6,7 +6,7 @@ from datetime import datetime
 from PyXmlMapper import base
 
 xml = """
-<PurchaseOrder PurchaseOrderNumber="99503" OrderDate="1999-10-20">  
+<PurchaseOrder PurchaseOrderNumber="99503" OrderDate="1999-10-20" EmptyDate="">  
   <Address Type="Shipping">  
     <Name>Ellen Adams</Name>  
     <Street>123 Maple Street</Street>  
@@ -72,6 +72,7 @@ class PurchaseItemsXmlParser(base.BaseXmlParser):
 class PurchaseOrderWithNotFoundFields(base.BaseXmlParser):
     order_date = base.DateTimeField('@orderdate', date_format="%Y-%m-%d")
     order_date_default = base.DateTimeField('@orderdate', date_format="%Y-%m-%d", default="1970-01-01")
+    order_date_empty = base.DateTimeField('@EmptyDate', date_format="%Y-%m-%d", default="1970-01-01")
     address_shipping = base.ObjectField("address[@Type='Shipping']", AddressXmlParser)
     address_billing = base.ObjectField("address[@Type='Billing']", AddressXmlParser)
     delivery_notes = base.ValueField("deliveryNotes")
@@ -136,6 +137,9 @@ class TestXmlParserNotFoundCases(unittest.TestCase):
 
     def test_datetime_field_default(self):
         self.assertEqual(self.obj.order_date_default, datetime(1970, 1, 1))
+
+    def test_datetime_should_return_default_when_incorrect_value(self):
+        self.assertEqual(self.obj.order_date_empty, datetime(1970, 1, 1))
 
     def test_value_field_raise_exception(self):
         self.assertEqual(self.obj.delivery_notes, '')
