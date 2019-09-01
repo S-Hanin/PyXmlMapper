@@ -1,5 +1,6 @@
 # -*- coding: utf8 -*-
 import logging
+
 from dateutil import parser as date_parser
 from lxml import etree
 
@@ -60,15 +61,18 @@ class Selector:
         self.items = items
 
     def first(self):
-        if not len(self.items): return Default(self.default)
+        if not len(self.items):
+            return Default(self.default)
         return self.items[0]
 
     def last(self):
-        if not len(self.items): return Default(self.default)
+        if not len(self.items):
+            return Default(self.default)
         return self.items[-1]
 
     def item(self, index):
-        if len(self.items) < index: return Default(self.default)
+        if len(self.items) < index:
+            return Default(self.default)
         return self.items[index]
 
     def all(self):
@@ -94,9 +98,11 @@ class FieldMeta(type):
 
 
 class TypeCastMixin:
-    def convert(self, _type, value):
+    @staticmethod
+    def convert(_type, value):
         try:
-            if isinstance(value, Default): return value.default
+            if isinstance(value, Default):
+                return value.default
             return _type(value)
         except Exception as err:
             logger.critical(err)
@@ -153,7 +159,8 @@ class XmlField(TypeCastMixin, metaclass=FieldMeta):
                 ns = self._namespaces.pop(None)
                 self._namespaces['ns'] = ns
 
-    def _to_string(self, doc):
+    @staticmethod
+    def _to_string(doc):
         return etree.tostring(doc, pretty_print=True)
 
     def __set_name__(self, owner, name):
@@ -164,21 +171,24 @@ class XmlField(TypeCastMixin, metaclass=FieldMeta):
 class ValueField(XmlField):
 
     def __get__(self, instance, owner):
-        if not instance: return self
+        if not instance:
+            return self
         return self.value(instance.document)
 
 
 class ListValueField(XmlField):
 
     def __get__(self, instance, owner):
-        if not instance: return self
+        if not instance:
+            return self
         return self.values_list(instance.document)
 
 
 class DateTimeField(XmlField):
 
     def __get__(self, instance, owner):
-        if not instance: return self
+        if not instance:
+            return self
         self._owner_name = instance.__class__.__name__
         return self.convert_date(self.value(instance.document), self._default)
 
@@ -204,14 +214,16 @@ class DateTimeField(XmlField):
 class ObjectField(XmlField):
 
     def __get__(self, instance, owner):
-        if not instance: return self
+        if not instance:
+            return self
         return self.object(instance.document)
 
 
 class ListObjectField(XmlField):
 
     def __get__(self, instance, owner):
-        if not instance: return self
+        if not instance:
+            return self
         return self.objects_list(instance.document)
 
 
@@ -229,6 +241,7 @@ class BaseXmlParser(metaclass=ParserMeta):
     __namespaces__ = {"auto": True}
 
     def __init__(self, doc=None):
+        self.__xml_tree__ = None
         if doc is not None:
             self.set_document(doc)
 
