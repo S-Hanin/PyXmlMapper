@@ -9,6 +9,6 @@ setup(
     license='',
     author='redlex',
     author_email='domini.lex@gmail.com',
-    description='Declarative xml mapping library', install_requires=['lxml'],
+    description='Declarative xml mapping library', install_requires=['lxml', 'python-dateutil'],
     long_description=open(join(dirname(__file__), 'README.md')).read(),
 )
