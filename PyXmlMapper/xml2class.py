@@ -145,7 +145,7 @@ class CodeBuilder(object):
             self.create_attribute(item)
 
     def create_model(self, item):
-        class_definition = ["class {}(base.BaseXmlMapper):".format(self.upper_first_letter(item.name))]
+        class_definition = ["class {}(base.BaseXmlParser):".format(self.upper_first_letter(item.name))]
         self.models[item.name] = class_definition
         if item.has_same_siblings(item):
             self.add_listobject_field(item)
@@ -201,7 +201,7 @@ class CodeBuilder(object):
 
     def render_to_screen(self):
         print("from PyXmlMapper import base\n\n")
-        for lines in self.models.values():
+        for lines in reversed(self.models.values()):
             print("\n".join(lines))
             print("\n")
 
@@ -241,7 +241,7 @@ def main():
     obj_tree = build_tree(xml)
     builder_visitor = CodeBuilder()
     obj_tree.iterwalk(builder_visitor)
-    builder_visitor.render_to_screen()
+    print(builder_visitor.render_to_string())
 
 
 if __name__ == "__main__":
