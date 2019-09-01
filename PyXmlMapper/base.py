@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 import logging
-import dateutil
+from dateutil import parser as date_parser
 from lxml import etree
 
 logger = logging.getLogger('PyXmlMapper')
@@ -184,7 +184,7 @@ class DateTimeField(XmlField):
 
     def convert_date(self, date, default):
         try:
-            return dateutil.parser.parse(date)
+            return date_parser.parse(date)
         except ValueError as err:
             logger.warning("{{ '{}':: Attr: '{}', Query: '{}' }} Exception: {}"
                            .format(self._owner_name, self._attr_name, self._query, err))
@@ -193,7 +193,7 @@ class DateTimeField(XmlField):
                            .format(self._owner_name, self._attr_name, self._query, err))
 
         if default:
-            result = dateutil.parser.parse(self._default)
+            result = date_parser.parse(self._default)
         else:
             raise ValueError("Can't convert value {} to date. {{ '{}':: Attr: '{}', Query: '{}' }}"
                              .format(date, self._owner_name, self._attr_name, self._query))
