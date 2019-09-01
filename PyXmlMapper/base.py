@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 import logging
-from datetime import datetime
+import dateutil
 from lxml import etree
 
 logger = logging.getLogger('PyXmlMapper')
@@ -180,19 +180,24 @@ class DateTimeField(XmlField):
     def __get__(self, instance, owner):
         if not instance: return self
         self._owner_name = instance.__class__.__name__
-        date_format = self._date_format if hasattr(self, '_date_format') else "%Y-%m-%dT%H:%M:%S%z"
-        return self.convert_date(self.value(instance.document), date_format, self._default)
+        return self.convert_date(self.value(instance.document), self._default)
 
-    def convert_date(self, date, date_format, default):
+    def convert_date(self, date, default):
         try:
-            result = datetime.strptime(date, date_format)
+            return dateutil.parser.parse(date)
         except ValueError as err:
             logger.warning("{{ '{}':: Attr: '{}', Query: '{}' }} Exception: {}"
-                            .format(self._owner_name, self._attr_name, self._query, err))
-            if default:
-                result = datetime.strptime(self._default, date_format)
-            else:
-                raise err
+                           .format(self._owner_name, self._attr_name, self._query, err))
+        except OverflowError as err:
+            logger.warning("{{ '{}':: Attr: '{}', Query: '{}' }} Exception: {}"
+                           .format(self._owner_name, self._attr_name, self._query, err))
+
+        if default:
+            result = dateutil.parser.parse(self._default)
+        else:
+            raise ValueError("Can't convert value {} to date. {{ '{}':: Attr: '{}', Query: '{}' }}"
+                             .format(date, self._owner_name, self._attr_name, self._query))
+
         return result
 
 
@@ -240,4 +245,3 @@ class BaseXmlParser(metaclass=ParserMeta):
     @property
     def document(self):
         return self.__xml_tree__
-
