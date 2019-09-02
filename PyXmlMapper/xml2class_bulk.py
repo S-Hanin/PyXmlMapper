@@ -16,10 +16,11 @@ def main():
     args = interface.parse_args()
     in_path = args.in_dir
     out_path = args.out_dir
-    extension = "/*.zip" if args.from_zip else "/*.xml"
+    extension = "*.zip" if args.from_zip else "*.xml"
     in_path = os.path.join(in_path, extension)
-
+    print("in_dir: {}, out_dir: {}".format(in_path, out_path))
     for item in glob.glob(in_path):
+        print("processing {}".format(item))
         if args.from_zip:
             if zipfile.is_zipfile(item):
                 xml_zip = zipfile.ZipFile(item)
