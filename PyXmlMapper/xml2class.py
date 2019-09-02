@@ -1,3 +1,4 @@
+#!python
 # -*- coding: utf8 -*-
 
 import logging
@@ -67,7 +68,7 @@ def remove_ns(element):
 
 def replace_ns_in_path(path, nsmap):
     result = path
-    for prefix, ns in nsmap.iteritems():
+    for prefix, ns in nsmap.items():
         ns = "{{{}}}".format(ns)
         prefix = "{}:".format(prefix) if prefix else ''
         result = result.replace(ns, prefix)
@@ -121,7 +122,7 @@ class CodeBuilder(object):
     @staticmethod
     def prepare_string(string):
         value = strip(string) if string else ''
-        return value.encode("utf8")
+        return value
 
     @staticmethod
     def upper_first_letter(string):

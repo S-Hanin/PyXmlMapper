@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:purchaseNotice xsi:schemaLocation="http://zakupki.gov.ru/223/integration/schema/TFF-9.0.3 http://zakupki.gov.ru/223/integration/schema/TFF-9.0.3/purchase.xsd" xmlns="http://zakupki.gov.ru/223fz/types/1" xmlns:ns20="http://zakupki.gov.ru/223fz/complaint/1" xmlns:ns21="http://zakupki.gov.ru/223fz/notificationIssue/1" xmlns:ns22="http://zakupki.gov.ru/223fz/purchasePlanProject/1" xmlns:ns23="http://zakupki.gov.ru/223fz/ecp-packet/1" xmlns:ns24="http://zakupki.gov.ru/223fz/webRequest/1" xmlns:ns2="http://zakupki.gov.ru/223fz/purchase/1" xmlns:ns3="http://zakupki.gov.ru/223fz/dishonestSupplier/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns4="http://zakupki.gov.ru/223fz/disagreementProtocol/1" xmlns:ns5="http://zakupki.gov.ru/223fz/purchasePlan/1" xmlns:ns6="http://zakupki.gov.ru/223fz/purchasePlanProjectAdditionalPosition/1" xmlns:ns7="http://zakupki.gov.ru/223fz/customerRegistry/1" xmlns:ns8="http://zakupki.gov.ru/223fz/stopCommodity/1" xmlns:ns9="http://zakupki.gov.ru/223fz/reference/1" xmlns:ns10="http://zakupki.gov.ru/223fz/exclusion/1" xmlns:ns11="http://zakupki.gov.ru/223fz/typalOrderClauseList/1" xmlns:ns12="http://zakupki.gov.ru/223fz/machineryListInfo/1" xmlns:ns13="http://zakupki.gov.ru/223fz/revenue/1" xmlns:ns14="http://zakupki.gov.ru/223fz/contract/1" xmlns:ns15="http://zakupki.gov.ru/223fz/orderClauseList/1" xmlns:ns16="http://zakupki.gov.ru/223fz/missedNotice/1" xmlns:ns17="http://zakupki.gov.ru/223fz/decisionSuspension/1" xmlns:ns18="http://zakupki.gov.ru/223fz/purchasePlanAdditionalPosition/1" xmlns:ns19="http://zakupki.gov.ru/223fz/agencyRelation/1">
+    <header>
+        <guid>604ca62d-16b1-4497-9348-2d5d76aed245</guid>
+        <createDateTime>2019-08-29T18:35:37</createDateTime>
+    </header>
+    <ns2:body>
+        <ns2:item>
+            <guid>57c0cec5-cf10-4879-9e11-67e58599cd1e</guid>
+            <ns2:purchaseNoticeData>
+                <ns2:guid>57c0cec5-cf10-4879-9e11-67e58599cd1e</ns2:guid>
+                <ns2:createDateTime>2019-08-29T18:33:55</ns2:createDateTime>
+                <ns2:urlEIS>https://zakupki.gov.ru/223/purchase/private/purchase/notice-info/details.html?noticeInfoId=10079668</ns2:urlEIS>
+                <ns2:urlVSRZ>http://etprf.ru/NotificationEX/id/45214</ns2:urlVSRZ>
+                <ns2:registrationNumber>31908251995</ns2:registrationNumber>
+                <ns2:name>Запрос котировок в электронной форме №ЗКЭФ909/19-РФ на право заключения
+                    договора на оказание услуг по комплексной уборке помещений и прилегающих
+                    территорий для нужд Дополнительных офисов Тульского РФ АО
+                    «Россельхозбанк»</ns2:name>
+                <ns2:customer>
+                    <mainInfo>
+                        <fullName>АКЦИОНЕРНОЕ ОБЩЕСТВО "РОССИЙСКИЙ СЕЛЬСКОХОЗЯЙСТВЕННЫЙ БАНК"</fullName>
+                        <shortName>АО "РОССЕЛЬХОЗБАНК"</shortName>
+                        <iko>57725114488770401001</iko>
+                        <inn>7725114488</inn>
+                        <kpp>770401001</kpp>
+                        <ogrn>1027700342890</ogrn>
+                        <legalAddress>119034, ГОРОД МОСКВА, ПЕРЕУЛОК ГАГАРИНСКИЙ, дом 3</legalAddress>
+                        <postalAddress>119034 г. Москва Гагаринский пер д.3</postalAddress>
+                        <phone>7-495-7877787-3412</phone>
+                        <fax>-</fax>
+                        <email>zayavki@rshb.ru</email>
+                        <okato>45286590000</okato>
+                        <okopf>12267</okopf>
+                        <okopfName>Непубличные акционерные общества</okopfName>
+                        <okpo>52750822</okpo>
+                        <timeZone>
+                            <offset>0</offset>
+                            <name>МСК (СГВ+3) Москва</name>
+                        </timeZone>
+                        <region>ГОРОД МОСКВА</region>
+                    </mainInfo>
+                </ns2:customer>
+                <ns2:purchaseMethodCode>75939</ns2:purchaseMethodCode>
+                <ns2:purchaseCodeName>РСХБ_Запрос котировок в электронной форме</ns2:purchaseCodeName>
+                <ns2:placer>
+                    <mainInfo>
+                        <fullName>ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ "ЭТП"</fullName>
+                        <shortName>ООО "ЭТП"</shortName>
+                        <iko>51655218458165501001</iko>
+                        <inn>1655218458</inn>
+                        <kpp>165501001</kpp>
+                        <ogrn>1111690052099</ogrn>
+                        <legalAddress>420097, Респ Татарстан, г Казань, ул Достоевского, дом 66</legalAddress>
+                        <postalAddress>420097, Казань Город, Достоевского Улица, 66</postalAddress>
+                        <phone>8-800-7000369</phone>
+                        <email>funky-b@inbox.ru</email>
+                        <okato>92401367000</okato>
+                        <okopf>12300</okopf>
+                        <okopfName>Общества с ограниченной ответственностью</okopfName>
+                        <okpo>92272054</okpo>
+                    </mainInfo>
+                </ns2:placer>
+                <ns2:contact>
+                    <firstName>Ю.</firstName>
+                    <middleName>С.</middleName>
+                    <lastName>Пыленок</lastName>
+                    <phone>749536305533412</phone>
+                    <email>zayavki@rshb.ru</email>
+                </ns2:contact>
+                <ns2:publicationDateTime>2019-08-29T18:35:36</ns2:publicationDateTime>
+                <ns2:documentationDelivery>
+                    <deliveryStartDateTime>2019-08-29</deliveryStartDateTime>
+                    <deliveryEndDateTime>2019-09-09</deliveryEndDateTime>
+                    <place>Согласно документации</place>
+                    <procedure>Согласно документации</procedure>
+                </ns2:documentationDelivery>
+                <ns2:status>P</ns2:status>
+                <ns2:version>1</ns2:version>
+                <ns2:notDishonest>true</ns2:notDishonest>
+                <ns2:attachments>
+                    <totalDocumentsCount>1</totalDocumentsCount>
+                    <document>
+                        <guid>54939421-b4fb-4ff9-8179-3678b887b7de</guid>
+                        <createDateTime>2019-08-29T17:40:00</createDateTime>
+                        <fileName>ДЗД Извещение - КЛИНИНГ Тульский РФ.docx</fileName>
+                        <description>ДЗД Извещение - КЛИНИНГ Тульский РФ</description>
+                        <url>http://zakupki.gov.ru/223/purchase/public/download/download.html?id=54783822</url>
+                    </document>
+                </ns2:attachments>
+                <ns2:modificationDate>2019-08-29T18:35:37</ns2:modificationDate>
+                <ns2:saveUserId>34227</ns2:saveUserId>
+                <ns2:deliveryPlaceIndication>SINGLE_PLACE</ns2:deliveryPlaceIndication>
+                <ns2:emergency>false</ns2:emergency>
+                <ns2:jointPurchase>false</ns2:jointPurchase>
+                <ns2:antimonopolyDecisionTaken>false</ns2:antimonopolyDecisionTaken>
+                <ns2:applSubmisionPlace>Указано в извещении</ns2:applSubmisionPlace>
+                <ns2:applSubmisionStartDate>2019-08-30</ns2:applSubmisionStartDate>
+                <ns2:applSubmisionOrder>Указано в извещении</ns2:applSubmisionOrder>
+                <ns2:summingupOrder>Указано в извещении</ns2:summingupOrder>
+                <ns2:electronicPlaceInfo>
+                    <name>ETPRF</name>
+                    <url>http://etprf.ru</url>
+                    <electronicPlaceId>142</electronicPlaceId>
+                </ns2:electronicPlaceInfo>
+                <ns2:placingProcedure/>
+                <ns2:submissionCloseDateTime>2019-09-09T08:00:00</ns2:submissionCloseDateTime>
+                <ns2:publicationPlannedDate>2019-08-29</ns2:publicationPlannedDate>
+                <ns2:templateVersion>6</ns2:templateVersion>
+                <ns2:templateStructure>
+                    <ns2:level>
+                        <ns2:tabLevel>NOTICE</ns2:tabLevel>
+                        <ns2:tab>
+                            <tabOrdinal>1</tabOrdinal>
+                            <tabName>Общая информация</tabName>
+                            <fixedName>MAIN</fixedName>
+                            <section>
+                                <sectionOrdinal>1</sectionOrdinal>
+                                <sectionName>Сведения о состоянии извещения</sectionName>
+                                <fixedName>MAIN_STATUS</fixedName>
+                            </section>
+                            <section>
+                                <sectionOrdinal>2</sectionOrdinal>
+                                <sectionName>Сведения о заказчике</sectionName>
+                                <fixedName>MAIN_CUSTOMER</fixedName>
+                            </section>
+                            <section>
+                                <sectionOrdinal>3</sectionOrdinal>
+                                <sectionName>Общие сведения о закупке</sectionName>
+                                <fixedName>MAIN_PURCHASE</fixedName>
+                            </section>
+                            <section>
+                                <sectionOrdinal>4</sectionOrdinal>
+                                <sectionName>Контактная информация</sectionName>
+                                <fixedName>MAIN_CONTACTS</fixedName>
+                            </section>
+                        </ns2:tab>
+                        <ns2:tab>
+                            <tabOrdinal>2</tabOrdinal>
+                            <tabName>Порядок размещения закупки</tabName>
+                            <fixedName>COMMISSION</fixedName>
+                            <section>
+                                <sectionOrdinal>1</sectionOrdinal>
+                                <sectionName>Публикация извещения</sectionName>
+                                <fixedName>COMMISSION_PUBLISH</fixedName>
+                            </section>
+                            <section>
+                                <sectionOrdinal>2</sectionOrdinal>
+                                <sectionName>Расширенные данные</sectionName>
+                            </section>
+                        </ns2:tab>
+                        <ns2:tab>
+                            <tabOrdinal>3</tabOrdinal>
+                            <tabName>Список лотов</tabName>
+                            <fixedName>LOTS</fixedName>
+                            <section>
+                                <sectionOrdinal>1</sectionOrdinal>
+                                <sectionName>Сведения о лотах</sectionName>
+                                <fixedName>LOTS_INFO</fixedName>
+                            </section>
+                        </ns2:tab>
+                        <ns2:tab>
+                            <tabOrdinal>6</tabOrdinal>
+                            <tabName>Документация</tabName>
+                            <fixedName>DOCS</fixedName>
+                            <section>
+                                <sectionOrdinal>1</sectionOrdinal>
+                                <sectionName>Предоставление документации</sectionName>
+                                <fixedName>DOCS_INFO</fixedName>
+                            </section>
+                            <section>
+                                <sectionOrdinal>2</sectionOrdinal>
+                                <sectionName>Файлы документации</sectionName>
+                                <fixedName>DOCS_FILES</fixedName>
+                            </section>
+                        </ns2:tab>
+                    </ns2:level>
+                    <ns2:level>
+                        <ns2:tabLevel>LOT</ns2:tabLevel>
+                        <ns2:tab>
+                            <tabOrdinal>4</tabOrdinal>
+                            <tabName>Сведения о лоте</tabName>
+                            <fixedName>LOT_INFORMATION</fixedName>
+                            <section>
+                                <sectionOrdinal>1</sectionOrdinal>
+                                <sectionName>Общая информация о лоте</sectionName>
+                                <fixedName>LOT_INFO</fixedName>
+                            </section>
+                            <section>
+                                <sectionOrdinal>2</sectionOrdinal>
+                                <sectionName>Информация о товаре, работе, услуге</sectionName>
+                                <fixedName>LOT_GOODS</fixedName>
+                            </section>
+                            <section>
+                                <sectionOrdinal>3</sectionOrdinal>
+                                <sectionName>Место поставки</sectionName>
+                                <fixedName>LOT_PLACE</fixedName>
+                            </section>
+                        </ns2:tab>
+                    </ns2:level>
+                    <ns2:level>
+                        <ns2:tabLevel>LOT_CUSTOMER</ns2:tabLevel>
+                        <ns2:tab>
+                            <tabOrdinal>5</tabOrdinal>
+                            <tabName>Сведения по заказчику</tabName>
+                            <fixedName>LOT_CUSTOMER</fixedName>
+                            <section>
+                                <sectionOrdinal>1</sectionOrdinal>
+                                <sectionName>Общая информация по Заказчику</sectionName>
+                                <fixedName>LOT_CUSTOMER_INFO</fixedName>
+                            </section>
+                            <section>
+                                <sectionOrdinal>2</sectionOrdinal>
+                                <sectionName>Информация о товаре, работе, услуге</sectionName>
+                                <fixedName>LOT_CUSTOMER_GOODS</fixedName>
+                            </section>
+                            <section>
+                                <sectionOrdinal>3</sectionOrdinal>
+                                <sectionName>Место поставки</sectionName>
+                                <fixedName>LOT_CUSTOMER_PLACE</fixedName>
+                            </section>
+                        </ns2:tab>
+                    </ns2:level>
+                </ns2:templateStructure>
+                <ns2:extendFields>
+                    <noticeExtendField>
+                        <extendField>
+                            <integrCode>quotationExaminationPlace</integrCode>
+                            <description>Место (адрес) рассмотрения и оценки заявок на участие в запросе котировок</description>
+                            <type>STRING</type>
+                            <value>
+                                <string>Указано в извещении</string>
+                            </value>
+                        </extendField>
+                        <extendField>
+                            <integrCode>quotationExaminationTime</integrCode>
+                            <description>Дата и время окончания срока рассмотрения и оценки заявок на участие в запросе котировок</description>
+                            <type>DATETIME</type>
+                            <value>
+                                <dateTime>2019-09-13T16:00:00</dateTime>
+                            </value>
+                        </extendField>
+                        <position>
+                            <tabOrdinal>2</tabOrdinal>
+                            <tabName>COMMISSION</tabName>
+                            <sectionOrdinal>2</sectionOrdinal>
+                            <sectionName>COMISSION_SEC_Расширенные данные</sectionName>
+                        </position>
+                    </noticeExtendField>
+                </ns2:extendFields>
+                <ns2:lots>
+                    <lot>
+                        <guid>41c025ff-5b32-4a13-80e1-e9fe93ea4aa9</guid>
+                        <ordinalNumber>1</ordinalNumber>
+                        <lotEditEnabled>true</lotEditEnabled>
+                        <lotData>
+                            <subject>Оказание услуг по комплексной уборке помещений и прилегающих
+                                территорий для нужд Дополнительных офисов Тульского РФ АО
+                                «Россельхозбанк»</subject>
+                            <currency>
+                                <code>RUB</code>
+                                <digitalCode>643</digitalCode>
+                                <name>Российский рубль</name>
+                            </currency>
+                            <initialSum>4385117.76</initialSum>
+                            <deliveryPlace>
+                                <address>Указано в извещении</address>
+                            </deliveryPlace>
+                            <lotItems>
+                                <newCodes>true</newCodes>
+                                <lotItem>
+                                    <guid>dba4d490-d95c-4e3d-bce2-39051a32dc88</guid>
+                                    <ordinalNumber>1</ordinalNumber>
+                                    <okpd2>
+                                        <code>81.21.10.000</code>
+                                        <name>Услуги по общей уборке зданий</name>
+                                    </okpd2>
+                                    <okved2>
+                                        <code>81.21</code>
+                                        <name>Деятельность по общей уборке зданий</name>
+                                    </okved2>
+                                    <okei>
+                                        <code>876</code>
+                                        <name>Условная единица</name>
+                                    </okei>
+                                    <qty>1</qty>
+                                </lotItem>
+                            </lotItems>
+                            <forSmallOrMiddle>false</forSmallOrMiddle>
+                            <excludePurchaseFromPlan>false</excludePurchaseFromPlan>
+                            <subcontractorsRequirement>false</subcontractorsRequirement>
+                            <ignoredPurchase>false</ignoredPurchase>
+                            <centralized>false</centralized>
+                        </lotData>
+                        <deliveryPlaceIndication>GL</deliveryPlaceIndication>
+                        <jointLotData>
+                            <jointLot>false</jointLot>
+                        </jointLotData>
+                        <lotPlanInfo>
+                            <planRegistrationNumber>2180330736</planRegistrationNumber>
+                            <planGuid>dabc8eca-fd51-4c2e-9941-261dc2763d73</planGuid>
+                            <positionNumber>3684</positionNumber>
+                            <lotPlanPosition>COMMODITY</lotPlanPosition>
+                            <positionGuid>efbad1ed-e5ba-4b9b-85ee-ca6be86ffa70</positionGuid>
+                        </lotPlanInfo>
+                        <cancelled>false</cancelled>
+                    </lot>
+                </ns2:lots>
+            </ns2:purchaseNoticeData>
+        </ns2:item>
+    </ns2:body>
+</ns2:purchaseNotice>
