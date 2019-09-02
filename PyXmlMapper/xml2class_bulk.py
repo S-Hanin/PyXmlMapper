@@ -25,13 +25,14 @@ def main():
             if zipfile.is_zipfile(item):
                 xml_zip = zipfile.ZipFile(item)
                 for item in xml_zip.namelist():
+                    if not item.endswith("xml"):
+                        continue
                     print(item)
                     xml_io = xml_zip.open(item)
                     models = xml2class.create_classes_from_file(xml_io)
                     py_filename = item + ".py"
                     with open(os.path.join(out_path, py_filename), "w") as fh:
                         fh.write(models)
-                    break
         else:
             models = xml2class.create_classes_from_file(item)
             py_filename = item + ".py"
