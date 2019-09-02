@@ -165,31 +165,31 @@ class CodeBuilder(object):
         try:
             if len(item.value) < 10: raise Exception()
             date = date_parser.parse(item.value)
-            attr_definition = ("\t{item.name} = base.DateTimeField('./{item.path}')  # {comment}"
+            attr_definition = ("\t{item.name} = base.DateTimeField('./{item.relative_path}')  # {comment}"
                                .format(item=item, comment=self.prepare_string(item.value)))
         except:
-            attr_definition = ("\t{item.name} = base.ValueField('./{item.path}')  # {comment}"
+            attr_definition = ("\t{item.name} = base.ValueField('./{item.relative_path}')  # {comment}"
                                .format(item=item, comment=self.prepare_string(item.value)))
         class_definition.append(attr_definition)
 
     def add_object_field(self, item):
         if item.parent is None: return
         class_definition = self.models[item.parent.name]
-        attr_definition = ("\t{item.name} = base.ObjectField('./{item.path}', default={classname}())"
+        attr_definition = ("\t{item.name} = base.ObjectField('./{item.relative_path}', default={classname}())"
                            .format(item=item, classname=self.upper_first_letter(item.name)))
         class_definition.append(attr_definition)
 
     def add_listvalue_field(self, item):
         if item.parent is None: return
         class_definition = self.models[item.parent.name]
-        attr_definition = ("\t{item.name}s = base.ListValueField('./{item.path}', default={item.name}())  # {comment}"
+        attr_definition = ("\t{item.name}s = base.ListValueField('./{item.relative_path}', default={item.name}())  # {comment}"
                            .format(item=item, comment=self.prepare_string(item.value)))
         class_definition.append(attr_definition)
 
     def add_listobject_field(self, item):
         if item.parent is None: return
         class_definition = self.models[item.parent.name]
-        attr_definition = ("\t{item.name}s = base.ListObjectField('./{item.path}', default={classname}())"
+        attr_definition = ("\t{item.name}s = base.ListObjectField('./{item.relative_path}', default={classname}())"
                            .format(item=item, classname=self.upper_first_letter(item.name)))
         for line in class_definition:
             if item.name in line:
@@ -197,18 +197,12 @@ class CodeBuilder(object):
         class_definition.append(attr_definition)
 
     def add_datetime_field(self, item):
-        return ("\t{item.name} = base.DateTimeField('./{item.path}')  # {comment}"
+        return ("\t{item.name} = base.DateTimeField('./{item.relative_path}')  # {comment}"
                 .format(item=item, comment=self.prepare_string(item.value)))
-
-    def render_to_screen(self):
-        print("from PyXmlMapper import base\n\n")
-        for lines in reversed(self.models.values()):
-            print("\n".join(lines))
-            print("\n")
 
     def render_to_string(self):
         result = StringIO()
-        result.write("#-*- coding: utf8 -*-\n\n")
+        result.write("#  -*- coding: utf8 -*-\n\n")
         result.write("from PyXmlMapper import base\n\n\n")
         for definition in reversed(self.models.values()):
             result.write("\n".join(definition))
@@ -222,6 +216,8 @@ def create_classes_from_file(filename):
     builder_visitor = CodeBuilder()
     obj_tree.iterwalk(builder_visitor)
     result = builder_visitor.render_to_string()
+    if isinstance(filename, str):
+        result = "#  {}\n\n{}".format(filename, result)
     return result
 
 
@@ -236,8 +232,7 @@ def create_classes_from_string(xml_string):
 
 def main():
     args = arg_parser.parse_args()
-    print("#-*- coding: utf8 -*-\n\n")
-    print("#{}\n\n\n".format(args.filename))
+    print("#  {}\n\n".format(args.filename))
     xml = etree.parse(args.filename)
     obj_tree = build_tree(xml)
     builder_visitor = CodeBuilder()
