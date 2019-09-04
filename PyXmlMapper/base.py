@@ -194,7 +194,7 @@ class DateTimeField(XmlField):
 
     def convert_date(self, date, default):
         try:
-            return date_parser.parse(date)
+            return date_parser.parse(date, fuzzy=True)
         except ValueError as err:
             logger.warning("{{ '{}':: Attr: '{}', Query: '{}' }} Exception: {}"
                            .format(self._owner_name, self._attr_name, self._query, err))
