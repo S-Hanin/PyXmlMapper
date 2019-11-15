@@ -57,35 +57,35 @@ class Default:
 
 class Selector:
     def __init__(self, items, default=""):
-        self.default = default
-        self.items = items
+        self._default = default
+        self._items = items
 
     def first(self):
-        if not len(self.items):
-            return Default(self.default)
-        return self.items[0]
+        if not len(self._items):
+            return Default(self._default)
+        return self._items[0]
 
     def last(self):
-        if not len(self.items):
-            return Default(self.default)
-        return self.items[-1]
+        if not len(self._items):
+            return Default(self._default)
+        return self._items[-1]
 
     def item(self, index):
-        if len(self.items) < index:
-            return Default(self.default)
-        return self.items[index]
+        if len(self._items) < index:
+            return Default(self._default)
+        return self._items[index]
 
     def all(self):
-        return self.items
+        return self._items
 
     def __len__(self):
-        return len(self.items)
+        return len(self._items)
 
     def __getitem__(self, item):
-        return self.items[item]
+        return self._items[item]
 
     def __iter__(self):
-        for item in self.items:
+        for item in self._items:
             yield item
 
 
@@ -120,37 +120,31 @@ class XmlField(TypeCastMixin, metaclass=FieldMeta):
     def exec_query(self, doc):
         self._set_doc_namespaces(doc)
         find = etree.XPath(self._query, namespaces=self._namespaces)
-        result = [] if not doc else find(doc)
+        result = [] if doc is None else find(doc)
         if len(result) == 0 and self._strict:
             raise NotFoundExcetion
         return result
 
     def value(self, doc):
         result = Selector(self.exec_query(doc), self._default)
-        try:
-            return self.convert(self._pytype, getattr(result.first(), 'text', result.first()))
-        except Exception as err:
-            logger.debug("{}\n{}".format(err, self._to_string(doc)))
-            raise
+        return self.convert(self._pytype, getattr(result.first(), 'text', result.first()))
+
+    def object(self, doc):
+        result = Selector(self.exec_query(doc), self._default)
+        return self.convert(self._pytype, result.first())
 
     def values_list(self, doc):
         query_result = self.exec_query(doc)
         result = [self.convert(self._pytype, getattr(item, 'text', item)) for item in query_result]
         return Selector(result, self._default)
 
-    def object(self, doc):
-        result = Selector(self.exec_query(doc), self._default)
-        return self.convert(self._pytype, result.first())
-
     def objects_list(self, doc):
-        result = []
         query_result = self.exec_query(doc)
-        for item in query_result:
-            result.append(self.convert(self._pytype, item))
+        result = [self.convert(self._pytype, item) for item in query_result]
         return Selector(result, self._default)
 
     def _set_doc_namespaces(self, doc):
-        if not doc:
+        if doc is None:
             self._namespaces = {}
             return
         if self._namespaces.get('auto'):
@@ -185,6 +179,9 @@ class ListValueField(XmlField):
 
 
 class DateTimeField(XmlField):
+    def __init__(self, *args, date_format=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._date_format = date_format
 
     def __get__(self, instance, owner):
         if not instance:
@@ -195,10 +192,7 @@ class DateTimeField(XmlField):
     def convert_date(self, date, default):
         try:
             return date_parser.parse(date, fuzzy=True)
-        except ValueError as err:
-            logger.warning("{{ '{}':: Attr: '{}', Query: '{}' }} Exception: {}"
-                           .format(self._owner_name, self._attr_name, self._query, err))
-        except OverflowError as err:
+        except (ValueError, OverflowError) as err:
             logger.warning("{{ '{}':: Attr: '{}', Query: '{}' }} Exception: {}"
                            .format(self._owner_name, self._attr_name, self._query, err))
 
