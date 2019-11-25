@@ -109,6 +109,10 @@ class XmlField(TypeCastMixin):
         self._pytype = pytype
         self._strict = strict
 
+    def __set_name__(self, owner, name):
+        self._attr_name = name
+        self._namespaces = getattr(owner, '__namespaces__')
+
     def exec_query(self, doc):
         self._set_doc_namespaces(doc)
         find = etree.XPath(self._query, namespaces=self._namespaces)
@@ -148,10 +152,6 @@ class XmlField(TypeCastMixin):
     @staticmethod
     def _to_string(doc):
         return etree.tostring(doc, pretty_print=True)
-
-    def __set_name__(self, owner, name):
-        self._attr_name = name
-        self._namespaces = getattr(owner, '__namespaces__')
 
 
 class ValueField(XmlField):
