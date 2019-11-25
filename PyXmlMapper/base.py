@@ -89,14 +89,6 @@ class Selector:
             yield item
 
 
-class FieldMeta(type):
-    def __call__(cls, *args, **kwargs):
-        """set all __init__ arguments to object"""
-        obj = type.__call__(cls, *args)
-        [setattr(obj, "_" + name, kwargs[name]) for name in kwargs]
-        return obj
-
-
 class TypeCastMixin:
     @staticmethod
     def convert(_type, value):
@@ -109,7 +101,7 @@ class TypeCastMixin:
             raise TypeError(err)
 
 
-class XmlField(TypeCastMixin, metaclass=FieldMeta):
+class XmlField(TypeCastMixin):
     def __init__(self, query, pytype=str, default="", strict=False):
 
         self._query = query
