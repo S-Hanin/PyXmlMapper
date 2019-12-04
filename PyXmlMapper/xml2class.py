@@ -79,6 +79,10 @@ def strip(string):
     return string.strip() if string else ''
 
 
+def upper_first_letter(string):
+    return "{}{}".format(string[0].upper(), string[1:]) if string else ''
+
+
 def build_tree(element_tree):
     current = None
     for event, element in etree.iterwalk(element_tree, events=('start', 'end')):
@@ -87,13 +91,14 @@ def build_tree(element_tree):
                         value=element.text,
                         path=replace_ns_in_path(element_tree.getelementpath(element), element.nsmap),
                         parent=current)
+            # if element has no text and it's not root element then add his child and go deeper
             if not strip(element.text):
                 if current is not None:
                     current.add_child(node)
                 current = node
             else:
                 current.add_child(node)
-        if event == "end":
+        if event == "end":  # go upper
             if not strip(element.text):
                 current = current.parent if current.parent else current
     return current
@@ -119,16 +124,6 @@ class PrintVisitor(object):
 
 
 class CodeBuilder(object):
-    @staticmethod
-    def prepare_string(string):
-        value = strip(string) if string else ''
-        return value
-
-    @staticmethod
-    def upper_first_letter(string):
-        first = string[0]
-        return "{}{}".format(first.upper(), string[1:])
-
     def __init__(self):
         self.level = 0
         self.models = OrderedDict()
@@ -146,7 +141,7 @@ class CodeBuilder(object):
             self.create_attribute(item)
 
     def create_model(self, item):
-        class_definition = ["class {}(base.BaseXmlParser):".format(self.upper_first_letter(item.name))]
+        class_definition = ["class {}(base.BaseXmlParser):".format(upper_first_letter(item.name))]
         self.models[item.name] = class_definition
         if item.has_same_siblings(item):
             self.add_listobject_field(item)
@@ -162,43 +157,40 @@ class CodeBuilder(object):
     def add_value_field(self, item):
         if item.parent is None: return
         class_definition = self.models[item.parent.name]
+        # tries to recognize date or datetime value
         try:
-            if len(item.value) < 10: raise Exception()
-            date = date_parser.parse(item.value)
+            if len(item.value) < 10: raise Exception()  # if value smaller than 10 symbols it's too hard to recognize date value
+            date = date_parser.parse(item.value)  # this line throws an exception if date_parser can't recognize value
             attr_definition = ("\t{item.name} = base.DateTimeField('./{item.relative_path}')  # {comment}"
-                               .format(item=item, comment=self.prepare_string(item.value)))
+                               .format(item=item, comment=strip(item.value)))
         except:
             attr_definition = ("\t{item.name} = base.ValueField('./{item.relative_path}')  # {comment}"
-                               .format(item=item, comment=self.prepare_string(item.value)))
+                               .format(item=item, comment=strip(item.value)))
         class_definition.append(attr_definition)
 
     def add_object_field(self, item):
         if item.parent is None: return
         class_definition = self.models[item.parent.name]
         attr_definition = ("\t{item.name} = base.ObjectField('./{item.relative_path}', default={classname}())"
-                           .format(item=item, classname=self.upper_first_letter(item.name)))
+                           .format(item=item, classname=upper_first_letter(item.name)))
         class_definition.append(attr_definition)
 
     def add_listvalue_field(self, item):
         if item.parent is None: return
         class_definition = self.models[item.parent.name]
         attr_definition = ("\t{item.name}s = base.ListValueField('./{item.relative_path}', default={item.name}())  # {comment}"
-                           .format(item=item, comment=self.prepare_string(item.value)))
+                           .format(item=item, comment=strip(item.value)))
         class_definition.append(attr_definition)
 
     def add_listobject_field(self, item):
         if item.parent is None: return
         class_definition = self.models[item.parent.name]
         attr_definition = ("\t{item.name}s = base.ListObjectField('./{item.relative_path}', default={classname}())"
-                           .format(item=item, classname=self.upper_first_letter(item.name)))
+                           .format(item=item, classname=upper_first_letter(item.name)))
         for line in class_definition:
             if item.name in line:
                 return
         class_definition.append(attr_definition)
-
-    def add_datetime_field(self, item):
-        return ("\t{item.name} = base.DateTimeField('./{item.relative_path}')  # {comment}"
-                .format(item=item, comment=self.prepare_string(item.value)))
 
     def render_to_string(self):
         result = StringIO()
