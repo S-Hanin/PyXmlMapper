@@ -86,12 +86,12 @@ class TestXmlParserCreation(unittest.TestCase):
     def test_set_document(self):
         self.assertTrue(self.obj.document)
 
-    def test_value_fields_fill(self):
+    def test_value_fields_properly_filed(self):
         self.assertTrue(self.obj.address_shipping.name == 'Ellen Adams')
         self.assertTrue(self.obj.address_billing.city == 'Old Town')
         self.assertTrue(self.obj.delivery_notes == 'Please leave packages in shed by driveway.')
 
-    def test_list_fields_fill(self):
+    def test_list_fields_properly_filed(self):
         self.assertTrue(self.obj.items[0].product_name == 'Lawnmower')
         self.assertTrue(self.obj.items.first().product_name == 'Lawnmower')
         self.assertTrue(self.obj.items.first().part_number == '872-AA')
@@ -99,12 +99,12 @@ class TestXmlParserCreation(unittest.TestCase):
         self.assertTrue(self.obj.items.last().quantity == '2')
         self.assertTrue(self.obj.items.last().us_price == '39.98')
 
-    def test_missed_xml_subitem_return_default_value(self):
+    def test_missed_xml_subitem_returns_default_value(self):
         self.assertIsInstance(self.obj.customer1, Customer)
         self.assertEqual("", self.obj.customer1.name)
 
-    def test_missed_xml_subitem_raises_error_with_strict(self):
-        self.assertRaises(base.NotFoundExcetion, lambda: self.obj.customer2)
+    def test_missed_xml_subitem_raises_error_if_strict(self):
+        self.assertRaises(base.NotFoundException, lambda: self.obj.customer2)
 
 
 class TestXmlParserNotFoundCases(unittest.TestCase):

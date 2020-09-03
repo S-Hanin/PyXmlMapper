@@ -2,11 +2,14 @@
 # -*- coding: utf8 -*-
 
 import logging
-from io import StringIO
 from argparse import ArgumentParser
 from collections import OrderedDict
-from lxml import etree
+from io import StringIO
+
 from dateutil import parser as date_parser
+from lxml import etree
+
+import PyXmlMapper.components.xpath_functions
 
 logging.basicConfig(level=logging.INFO)
 
@@ -58,12 +61,12 @@ class Node(object):
 def replace_ns(element):
     ns = "{{{}}}".format(element.nsmap.get(element.prefix, ''))
     prefix = "{}:".format(element.prefix) if element.prefix else ''
-    return element.tag.replace(ns, prefix)
+    return PyXmlMapper.components.xpath_functions.tag.replace(ns, prefix)
 
 
 def remove_ns(element):
     ns = "{{{}}}".format(element.nsmap.get(element.prefix, ''))
-    return element.tag.replace(ns, '')
+    return PyXmlMapper.components.xpath_functions.tag.replace(ns, '')
 
 
 def replace_ns_in_path(path, nsmap):

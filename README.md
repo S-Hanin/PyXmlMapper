@@ -54,28 +54,29 @@ define classes for mapping
 
 ```python
 from PyXmlMapper import base
+from PyXmlMapper import fields
 
 
 class ItemXmlParser(base.BaseXmlParser):
     __namespaces__ = {'aw': 'http://www.adventure-works.com'}
 
-    product_name = base.ValueField("aw:ProductName")
-    part_number = base.ValueField("@aw:PartNumber")
-    quantity = base.ValueField("aw:Quantity", pytype=int)
-    us_price = base.ValueField("aw:USPrice", pytype=float)
+    product_name = fields.ValueField("aw:ProductName")
+    part_number = fields.ValueField("@aw:PartNumber")
+    quantity = fields.ValueField("aw:Quantity", pytype=int)
+    us_price = fields.ValueField("aw:USPrice", pytype=float)
 
 
 class AddressXmlParser(base.BaseXmlParser):
-    name = base.ValueField("aw:Name")
-    city = base.ValueField("aw:City")
+    name = fields.ValueField("aw:Name")
+    city = fields.ValueField("aw:City")
 
 
 class PurchaseOrderXmlParser(base.BaseXmlParser):
-    order_date = base.DateTimeField('@aw:OrderDate', date_format="%Y-%m-%d")
-    address_shipping = base.ObjectField("aw:Address[@aw:Type='Shipping']", AddressXmlParser)
-    address_billing = base.ObjectField("aw:Address[@aw:Type='Billing']", AddressXmlParser)
-    delivery_notes = base.ValueField("aw:DeliveryNotes")
-    items = base.ListObjectField(".//aw:Item", ItemXmlParser)
+    order_date = fields.DateTimeField('@aw:OrderDate', date_format="%Y-%m-%d")
+    address_shipping = fields.ObjectField("aw:Address[@aw:Type='Shipping']", AddressXmlParser)
+    address_billing = fields.ObjectField("aw:Address[@aw:Type='Billing']", AddressXmlParser)
+    delivery_notes = fields.ValueField("aw:DeliveryNotes")
+    items = fields.ListObjectField(".//aw:Item", ItemXmlParser)
     
 
 purchase_order = PurchaseOrderXmlParser(xml) # xml - string or xml tree
@@ -92,27 +93,28 @@ _Note that namespaces declaration is not necessary_
 
 To avoid prefix declaration in xpath it's possible to use additional xpath functions:
 ```python
-product_name = base.ValueField(".//*[tag()='ProductName']")
-product_name = base.ValueField(".//*[match(tag(), 'ProductName')]")
-product_name = base.ValueField(".//*[match(tag(), 'ProductName', 'product_name')]") # if tag name is not permanent
+from PyXmlMapper import fields
+
+product_name = fields.ValueField(".//*[tag()='ProductName']")
+product_name = fields.ValueField(".//*[match(tag(), 'ProductName')]")
+product_name = fields.ValueField(".//*[match(tag(), 'ProductName', 'product_name')]") # if tag name is not permanent
 ```
 
 or you can add your own xpath functions
 
 ```python
-import base
+from PyXmlMapper import xpath_functions
 
-@base.ns
+@xpath_functions.ns
 def lower(context, a):
     """lower-case() function for XPath 1.0"""
     return a.lower()
-
 ```
 
 and use it
 
 ```python
-product_name = base.ValueField(".//*[lower(tag())='productname']")
+product_name = fields.ValueField(".//*[lower(tag())='productname']")
 ```
 
 more about xpath functions:
