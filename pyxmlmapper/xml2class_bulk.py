@@ -4,9 +4,9 @@ import argparse
 import glob
 import os
 import zipfile
-from PyXmlMapper import xml2class
+from pyxmlmapper import xml2class
 
-interface = argparse.ArgumentParser(description="Creates models from xml for PyXmlMapper lib")
+interface = argparse.ArgumentParser(description="Creates models from xml for pyxmlmapper lib")
 interface.add_argument("in_dir", help="input directory, default - current directory", default="./")
 interface.add_argument("out_dir", help="output directory, default - current directory", default="./")
 interface.add_argument("-z", "--from_zip", help="gets files from zip archive", action="store_true")
