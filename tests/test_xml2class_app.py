@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 
-from PyXmlMapper import xml2class
+from pyxmlmapper import xml2class
 
 
 def main():
