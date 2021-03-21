@@ -61,12 +61,12 @@ class Node(object):
 def replace_ns(element):
     ns = "{{{}}}".format(element.nsmap.get(element.prefix, ''))
     prefix = "{}:".format(element.prefix) if element.prefix else ''
-    return pyxmlmapper.components.xpath_functions.tag.replace(ns, prefix)
+    return element.tag.replace(ns, prefix)
 
 
 def remove_ns(element):
     ns = "{{{}}}".format(element.nsmap.get(element.prefix, ''))
-    return pyxmlmapper.components.xpath_functions.tag.replace(ns, '')
+    return element.tag.replace(ns, '')
 
 
 def replace_ns_in_path(path, nsmap):
@@ -94,7 +94,7 @@ def build_tree(element_tree):
                         value=element.text,
                         path=replace_ns_in_path(element_tree.getelementpath(element), element.nsmap),
                         parent=current)
-            # if element has no text and it's not root element then add his child and go deeper
+            # if element has no text and it's not a root element then add his child and go deeper
             if not strip(element.text):
                 if current is not None:
                     current.add_child(node)
@@ -174,7 +174,7 @@ class CodeBuilder(object):
     def add_object_field(self, item):
         if item.parent is None: return
         class_definition = self.models[item.parent.name]
-        attr_definition = ("\t{item.name} = base.ObjectField('./{item.relative_path}', default={classname}())"
+        attr_definition = ("\t{item.name} = base.ObjectField('./{item.relative_path}', {classname}, default={classname}())"
                            .format(item=item, classname=upper_first_letter(item.name)))
         class_definition.append(attr_definition)
 
@@ -188,7 +188,7 @@ class CodeBuilder(object):
     def add_listobject_field(self, item):
         if item.parent is None: return
         class_definition = self.models[item.parent.name]
-        attr_definition = ("\t{item.name}s = base.ListObjectField('./{item.relative_path}', default={classname}())"
+        attr_definition = ("\t{item.name}s = base.ListObjectField('./{item.relative_path}', {classname}, default={classname}())"
                            .format(item=item, classname=upper_first_letter(item.name)))
         for line in class_definition:
             if item.name in line:
