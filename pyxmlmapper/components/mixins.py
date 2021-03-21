@@ -10,7 +10,7 @@ class TypeCastMixin:
     def convert(_type, value):
         try:
             if isinstance(value, Default):
-                return value.default
+                return value.value
             return _type(value)
         except Exception as err:
             logger.critical(err)

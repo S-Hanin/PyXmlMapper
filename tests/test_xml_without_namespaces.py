@@ -3,7 +3,7 @@
 import unittest
 from datetime import datetime
 
-from PyXmlMapper import base
+from pyxmlmapper import base
 
 xml = """
 <PurchaseOrder PurchaseOrderNumber="99503" OrderDate="1999-10-20" EmptyDate="">  
@@ -55,7 +55,7 @@ class AddressXmlParser(base.BaseXmlParser):
 
 
 class PurchaseOrderXmlParser(base.BaseXmlParser):
-    order_date = base.DateTimeField('@OrderDate', date_format="%Y-%m-%d")
+    order_date = base.DateTimeField('@OrderDate')
     address_shipping = base.ObjectField("Address[@Type='Shipping']", AddressXmlParser)
     address_billing = base.ObjectField("Address[@Type='Billing']", AddressXmlParser)
     delivery_notes = base.ValueField("DeliveryNotes")
@@ -70,9 +70,9 @@ class PurchaseItemsXmlParser(base.BaseXmlParser):
 
 
 class PurchaseOrderWithNotFoundFields(base.BaseXmlParser):
-    order_date = base.DateTimeField('@orderdate', date_format="%Y-%m-%d")
-    order_date_default = base.DateTimeField('@orderdate', date_format="%Y-%m-%d", default="1970-01-01")
-    order_date_empty = base.DateTimeField('@EmptyDate', date_format="%Y-%m-%d", default="1970-01-01")
+    order_date = base.DateTimeField('@orderdate')
+    order_date_default = base.DateTimeField('@orderdate', default=datetime(1970, 1, 1))
+    order_date_empty = base.DateTimeField('@EmptyDate', default=datetime(1970, 1, 1))
     address_shipping = base.ObjectField("address[@Type='Shipping']", AddressXmlParser)
     address_billing = base.ObjectField("address[@Type='Billing']", AddressXmlParser)
     delivery_notes = base.ValueField("deliveryNotes")

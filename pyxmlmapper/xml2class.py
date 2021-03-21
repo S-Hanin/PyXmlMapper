@@ -9,11 +9,11 @@ from io import StringIO
 from dateutil import parser as date_parser
 from lxml import etree
 
-import PyXmlMapper.components.xpath_functions
+import pyxmlmapper.components.xpath_functions
 
 logging.basicConfig(level=logging.INFO)
 
-arg_parser = ArgumentParser(description="Creates classes from xml file. Tool for PyXmlMapper lib")
+arg_parser = ArgumentParser(description="Creates classes from xml file. Tool for pyxmlmapper lib")
 arg_parser.add_argument("filename", nargs="?", help="path to xml file")
 
 
@@ -61,12 +61,12 @@ class Node(object):
 def replace_ns(element):
     ns = "{{{}}}".format(element.nsmap.get(element.prefix, ''))
     prefix = "{}:".format(element.prefix) if element.prefix else ''
-    return PyXmlMapper.components.xpath_functions.tag.replace(ns, prefix)
+    return pyxmlmapper.components.xpath_functions.tag.replace(ns, prefix)
 
 
 def remove_ns(element):
     ns = "{{{}}}".format(element.nsmap.get(element.prefix, ''))
-    return PyXmlMapper.components.xpath_functions.tag.replace(ns, '')
+    return pyxmlmapper.components.xpath_functions.tag.replace(ns, '')
 
 
 def replace_ns_in_path(path, nsmap):
@@ -198,7 +198,7 @@ class CodeBuilder(object):
     def render_to_string(self):
         result = StringIO()
         result.write("#  -*- coding: utf8 -*-\n\n")
-        result.write("from PyXmlMapper import base\n\n\n")
+        result.write("from pyxmlmapper import base\n\n\n")
         for definition in reversed(self.models.values()):
             result.write("\n".join(definition))
             result.write("\n\n\n")

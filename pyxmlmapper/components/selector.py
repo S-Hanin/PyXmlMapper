@@ -1,7 +1,8 @@
 from .common import Default
+from collections.abc import Iterable, Sized
 
 
-class Selector:
+class Selector(Iterable, Sized):
     def __init__(self, items, default=""):
         self._default = default
         self._items = items
@@ -17,7 +18,7 @@ class Selector:
         return self._items[-1]
 
     def item(self, index):
-        if len(self._items) < index:
+        if len(self._items) < abs(index):
             return Default(self._default)
         return self._items[index]
 

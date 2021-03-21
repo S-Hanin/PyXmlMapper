@@ -5,20 +5,11 @@ from .components.fields import *
 from .components.exceptions import *
 
 
-class ParserMeta(type):
-
-    def __call__(cls, *args, **kwargs):
-        obj = type.__call__(cls, *args, *kwargs)
-
-        if not hasattr(obj, "__xml_tree__"):
-            obj.__dict__["__xml_tree__"] = None
-        return obj
-
-
-class BaseXmlParser(metaclass=ParserMeta):
+class BaseXmlParser:
     __namespaces__ = {"auto": True}
 
     def __init__(self, doc=None):
+        self.__xml_tree__ = None
         if doc is not None:
             self.set_document(doc)
 

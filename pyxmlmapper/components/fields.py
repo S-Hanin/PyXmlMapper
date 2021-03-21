@@ -63,34 +63,39 @@ class XmlField(TypeCastMixin):
         return etree.tostring(doc, pretty_print=True)
 
 
-class ValueField(XmlField):
+def __get_decorator(method):
+    def get(self, instance, owner):
+        call = getattr(self, method)
+        return call(instance.document) if instance else self
 
-    def __get__(self, instance, owner):
-        return self.value(instance.document) if instance else self
+    def wrap(cls):
+        cls.__get__ = get
+        return cls
 
-
-class ListValueField(XmlField):
-
-    def __get__(self, instance, owner):
-        return self.values_list(instance.document) if instance else self
-
-
-class ObjectField(XmlField):
-
-    def __get__(self, instance, owner):
-        return self.object(instance.document) if instance else self
+    return wrap
 
 
-class ListObjectField(XmlField):
+@__get_decorator("value")
+class ValueField(XmlField): pass
 
-    def __get__(self, instance, owner):
-        return self.objects_list(instance.document) if instance else self
+
+@__get_decorator("values_list")
+class ListValueField(XmlField): pass
+
+
+@__get_decorator("object")
+class ObjectField(XmlField): pass
+
+
+@__get_decorator("objects_list")
+class ListObjectField(XmlField): pass
 
 
 class DateTimeField(XmlField):
-    def __init__(self, *args, date_format=None, **kwargs):
+    def __init__(self, *args, dayfirst=False, yearfirst=False, fuzzy=True, **kwargs):
         super().__init__(*args, **kwargs)
-        self._date_format = date_format
+        self._parserinfo = date_parser.parserinfo(dayfirst=dayfirst, yearfirst=yearfirst)
+        self._fuzzy = fuzzy
 
     def __get__(self, instance, owner):
         if not instance:
@@ -100,14 +105,13 @@ class DateTimeField(XmlField):
 
     def convert_date(self, date, default):
         try:
-            return date_parser.parse(date, fuzzy=True)
+            return date_parser.parse(date, fuzzy=self._fuzzy, parserinfo=self._parserinfo)
         except (ValueError, OverflowError) as err:
             logger.warning("{{ '{}':: Attr: '{}', Query: '{}' }} Exception: {}"
                            .format(self._owner_name, self._attr_name, self._query, err))
 
         if default:
-            result = date_parser.parse(self._default)
+            return default
         else:
             raise ValueError("Can't convert value {} to date. {{ '{}':: Attr: '{}', Query: '{}' }}"
                              .format(date, self._owner_name, self._attr_name, self._query))
-        return result

@@ -2,7 +2,7 @@
 
 import unittest
 
-from PyXmlMapper import base
+from pyxmlmapper import base
 
 xml = """
 <aw:PurchaseOrder  
@@ -37,7 +37,7 @@ xml = """
       <aw:ProductName>Baby Monitor</aw:ProductName>  
       <aw:Quantity>2</aw:Quantity>  
       <aw:USPrice>39.98</aw:USPrice>  
-      <aw:ShipDate>1999-05-21</aw:ShipDate>  
+      <aw:ShipDate>12-12-2021</aw:ShipDate>  
     </aw:Item>  
   </aw:Items>  
 </aw:PurchaseOrder> 
@@ -86,12 +86,12 @@ class TestXmlParserCreation(unittest.TestCase):
     def test_set_document(self):
         self.assertTrue(self.obj.document)
 
-    def test_value_fields_properly_filed(self):
+    def test_value_fields_properly_filled(self):
         self.assertTrue(self.obj.address_shipping.name == 'Ellen Adams')
         self.assertTrue(self.obj.address_billing.city == 'Old Town')
         self.assertTrue(self.obj.delivery_notes == 'Please leave packages in shed by driveway.')
 
-    def test_list_fields_properly_filed(self):
+    def test_list_fields_properly_filled(self):
         self.assertTrue(self.obj.items[0].product_name == 'Lawnmower')
         self.assertTrue(self.obj.items.first().product_name == 'Lawnmower')
         self.assertTrue(self.obj.items.first().part_number == '872-AA')

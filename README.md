@@ -53,8 +53,8 @@ xml example
 define classes for mapping
 
 ```python
-from PyXmlMapper import base
-from PyXmlMapper import fields
+from pyxmlmapper import base
+from pyxmlmapper import fields
 
 
 class ItemXmlParser(base.BaseXmlParser):
@@ -92,8 +92,9 @@ for item in purchase_order.items:
 _Note that namespaces declaration is not necessary_
 
 To avoid prefix declaration in xpath it's possible to use additional xpath functions:
+
 ```python
-from PyXmlMapper import fields
+from pyxmlmapper import fields
 
 product_name = fields.ValueField(".//*[tag()='ProductName']")
 product_name = fields.ValueField(".//*[match(tag(), 'ProductName')]")
@@ -103,7 +104,7 @@ product_name = fields.ValueField(".//*[match(tag(), 'ProductName', 'product_name
 or you can add your own xpath functions
 
 ```python
-from PyXmlMapper import xpath_functions
+from pyxmlmapper import xpath_functions
 
 @xpath_functions.ns
 def lower(context, a):
