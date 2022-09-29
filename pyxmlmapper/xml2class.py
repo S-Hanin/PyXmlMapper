@@ -174,7 +174,7 @@ class CodeBuilder(object):
     def add_object_field(self, item):
         if item.parent is None: return
         class_definition = self.models[item.parent.name]
-        attr_definition = ("\t{item.name} = base.ObjectField('./{item.relative_path}', {classname}, default={classname}())"
+        attr_definition = ("\t{item.name}: {classname} = base.ObjectField('./{item.relative_path}', {classname}, default={classname}())"
                            .format(item=item, classname=upper_first_letter(item.name)))
         class_definition.append(attr_definition)
 
@@ -188,7 +188,7 @@ class CodeBuilder(object):
     def add_listobject_field(self, item):
         if item.parent is None: return
         class_definition = self.models[item.parent.name]
-        attr_definition = ("\t{item.name}s = base.ListObjectField('./{item.relative_path}', {classname}, default={classname}())"
+        attr_definition = ("\t{item.name}s: List[{classname}] = base.ListObjectField('./{item.relative_path}', {classname}, default={classname}())"
                            .format(item=item, classname=upper_first_letter(item.name)))
         for line in class_definition:
             if item.name in line:
@@ -198,7 +198,8 @@ class CodeBuilder(object):
     def render_to_string(self):
         result = StringIO()
         result.write("#  -*- coding: utf8 -*-\n\n")
-        result.write("from pyxmlmapper import base\n\n\n")
+        result.write("from pyxmlmapper import base\n")
+        result.write("from typing import List\n\n\n")
         for definition in reversed(self.models.values()):
             result.write("\n".join(definition))
             result.write("\n\n\n")
