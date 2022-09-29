@@ -15,7 +15,7 @@ class BaseXmlParser:
 
     def set_document(self, xml_string):
         if not hasattr(xml_string, 'tag'):
-            self.__xml_tree__ = etree.fromstring(xml_string)
+            self.__xml_tree__ = etree.fromstring(xml_string, etree.XMLParser(recover=True))
         else:
             self.__xml_tree__ = xml_string
 

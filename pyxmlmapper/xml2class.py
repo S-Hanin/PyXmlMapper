@@ -94,7 +94,7 @@ def build_tree(element_tree):
                         value=element.text,
                         path=replace_ns_in_path(element_tree.getelementpath(element), element.nsmap),
                         parent=current)
-            # if element has no text and it's not a root element then add his child and go deeper
+            # if element has no text and it's not a root element then add him as a child and go deeper
             if not strip(element.text):
                 if current is not None:
                     current.add_child(node)

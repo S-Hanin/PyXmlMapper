@@ -6,12 +6,12 @@ Declarative xml to object mapper
 
 ### installation
 ```bash
-git clone https://github.com/S-Hanin/xml_mapper.git
-cd xml_mapper && python setup.py install
+git clone https://github.com/S-Hanin/PyXmlMapper.git
+cd PyXmlMapper && python setup.py install
 ```
 or just add it to your requirements.txt
 ```text
-git+https://github.com/S-Hanin/xml_mapper.git#egg=pyxmlmapper
+git+https://github.com/S-Hanin/PyXmlMapper.git#egg=pyxmlmapper
 ```
 
 ### usage
@@ -60,6 +60,7 @@ define classes for mapping
 ```python
 from pyxmlmapper import base
 from pyxmlmapper import fields
+from typing import List
 
 
 class Item(base.BaseXmlParser):
@@ -78,10 +79,10 @@ class Address(base.BaseXmlParser):
 
 class PurchaseOrder(base.BaseXmlParser):
     order_date = fields.DateTimeField('@aw:OrderDate')
-    address_shipping = fields.ObjectField("aw:Address[@aw:Type='Shipping']", Address)
-    address_billing = fields.ObjectField("aw:Address[@aw:Type='Billing']", Address)
+    address_shipping: Address = fields.ObjectField("aw:Address[@aw:Type='Shipping']", Address)
+    address_billing: Address = fields.ObjectField("aw:Address[@aw:Type='Billing']", Address)
     delivery_notes = fields.ValueField("aw:DeliveryNotes")
-    items = fields.ListObjectField(".//aw:Item", Item)
+    items: List[Item] = fields.ListObjectField(".//aw:Item", Item)
     
 
 purchase_order = PurchaseOrder(xml) # xml - string or xml tree
@@ -93,8 +94,21 @@ for item in purchase_order.items:
     print(item.product_name)
 
 ```
+_Note that namespaces declaration is not necessary_  
 
-_Note that namespaces declaration is not necessary_
+#### It's worth noting that mapper works lazily and a query is executed at the moment you are querying the field's value
+
+If you have an XML file example it's possible to generate models
+using scripts xml2class.py or xml2class_bulk.py.
+```bash
+xml2class.py filename.xml > filename.py
+```
+or
+```bash
+xml2class_bulk.py [-z] in_dir out_dir
+```
+Option -z allows to process zip archives
+
 
 ### fields
 
